@@ -1,21 +1,15 @@
 import { knuthShuffle } from 'knuth-shuffle'
 
-type Domino = [number, number]
+import { generateDominos, getLongestChain } from './domino'
 
-const generateDominos = (highestDouble: number): Domino[] => {
-  const dominoes: Domino[] = []
+const HIGHEST_DOUBLE = 6
+const HAND_SIZE = 8
 
-  for (let n = 0; n <= highestDouble; n += 1) {
-    for (let i = n; i <= highestDouble; i += 1) {
-      dominoes.push([n, i])
-    }
-  }
-
-  return dominoes
-}
-
-const fullSet = generateDominos(6)
-
+const fullSet = generateDominos(HIGHEST_DOUBLE)
 knuthShuffle(fullSet)
 
-console.log(fullSet)
+const startingDomino = fullSet.splice(0, 1)[0]
+const hand = fullSet.splice(-HAND_SIZE)
+const longestChain = getLongestChain(startingDomino, hand)
+
+console.log(longestChain)
