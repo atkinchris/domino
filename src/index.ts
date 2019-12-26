@@ -1,15 +1,23 @@
-import { knuthShuffle } from 'knuth-shuffle'
+import playGame from './game'
 
-import { generateDominos, getLongestChain } from './domino'
+const HAND_SIZE = 15
+const HIGHEST_DOUBLE = 12
+const NUMBER_OF_PLAYERS = 4
+const STATIONS = 8
 
-const HIGHEST_DOUBLE = 6
-const HAND_SIZE = 8
+const MAX_ITERATIONS = 1000
+let scores
+let iteration = 0
 
-const fullSet = generateDominos(HIGHEST_DOUBLE)
-knuthShuffle(fullSet)
+do {
+  iteration += 1
+  scores = playGame({
+    handSize: HAND_SIZE,
+    highestDouble: HIGHEST_DOUBLE,
+    numberOfPlayers: NUMBER_OF_PLAYERS,
+    stations: STATIONS,
+  })
+} while (!scores && iteration < MAX_ITERATIONS)
 
-const startingDomino = fullSet.splice(0, 1)[0]
-const hand = fullSet.splice(-HAND_SIZE)
-const longestChain = getLongestChain(startingDomino, hand)
-
-console.log(longestChain)
+console.log(`Game finished on iteration: ${iteration}`)
+console.log(scores)

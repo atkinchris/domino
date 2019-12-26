@@ -2,6 +2,8 @@ type Domino = [number, number]
 
 const reverseDomino = ([a, b]: Domino): Domino => [b, a]
 
+const isEqual = (a: Domino, b: Domino): boolean => (a[0] === b[0] && a[1] === b[1]) || (a[0] === b[1] && a[1] === b[0])
+
 const generateDominos = (highestDouble: number): Domino[] => {
   const dominoes: Domino[] = []
 
@@ -39,4 +41,4 @@ const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] => {
   return chains.sort((a, b) => (a.length > b.length ? -1 : 1))[0]
 }
 
-export { Domino, generateDominos, getLongestChain }
+export { Domino, generateDominos, getLongestChain, isEqual }
