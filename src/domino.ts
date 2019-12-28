@@ -25,6 +25,7 @@ const generateDominos = (highestDouble: number): Domino[] => {
 const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] | null => {
   const chains: Domino[][] = []
 
+  // This overflows at large hand sizes
   const buildChain = (chain: Domino[], remaining: Domino[]) => {
     chains.push(chain)
 
