@@ -1,6 +1,6 @@
 import { knuthShuffle } from 'knuth-shuffle'
 
-import { Domino, generateDominos, getLongestChain, isEqual } from './domino'
+import { Domino, generateDominos, getLongestChain, isEqual, scoreDominos } from './domino'
 
 interface Config {
   handSize: number
@@ -28,7 +28,7 @@ const isWon = (players: Player[]) => players.some(({ hand }) => hand.length === 
 const getScores = (players: Player[]): Result[] =>
   players.map(player => ({
     player: player.id,
-    score: player.hand.reduce((score, domino) => score + domino[0] + domino[1], 0),
+    score: scoreDominos(player.hand),
   }))
 
 const playGame = ({ handSize, highestDouble, numberOfPlayers, stations }: Config) => {
@@ -54,7 +54,7 @@ const playGame = ({ handSize, highestDouble, numberOfPlayers, stations }: Config
   players.forEach(({ id, hand }) => {
     const chain = getLongestChain(startingDomino, hand)
 
-    if (chain.length > 1) {
+    if (chain && chain.length > 1) {
       const fromHand = chain.slice(1)
       const train = trains[id]
 

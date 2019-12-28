@@ -5,6 +5,10 @@ const reverseDomino = ([a, b]: Domino): Domino => [b, a]
 const scoreDominos = (dominos: Domino[]): number => dominos.reduce((score, domino) => score + domino[0] + domino[1], 0)
 
 const isEqual = (a: Domino, b: Domino): boolean => (a[0] === b[0] && a[1] === b[1]) || (a[0] === b[1] && a[1] === b[0])
+const isDouble = ([a, b]: Domino): boolean => a === b
+const toString = ([a, b]: Domino): string => `${a}|${b}`
+const fromString = (str: string): Domino => str.split('|').map(value => parseInt(value, 10)) as Domino
+const formatDominos = (dominos: Domino[]): string => dominos.map(toString).join(', ')
 
 const generateDominos = (highestDouble: number): Domino[] => {
   const dominoes: Domino[] = []
@@ -22,9 +26,7 @@ const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] | nul
   const chains: Domino[][] = []
 
   const buildChain = (chain: Domino[], remaining: Domino[]) => {
-    if (chain.length > 1) {
-      chains.push(chain)
-    }
+    chains.push(chain)
 
     const lastDomino = chain[chain.length - 1]
 
@@ -43,7 +45,7 @@ const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] | nul
 
   buildChain([startingDomino], hand)
 
-  if (chains.length === 0) {
+  if (chains.length === 1) {
     return null
   }
 
@@ -60,4 +62,14 @@ const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] | nul
   return longestChains[0]
 }
 
-export { Domino, generateDominos, getLongestChain, isEqual }
+export {
+  Domino,
+  generateDominos,
+  getLongestChain,
+  isEqual,
+  scoreDominos,
+  formatDominos,
+  toString,
+  fromString,
+  isDouble,
+}
