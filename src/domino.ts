@@ -24,9 +24,15 @@ const generateDominos = (highestDouble: number): Domino[] => {
 
 const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] | null => {
   const chains: Domino[][] = []
+  const queue: Array<[Domino[], Domino[]]> = [[[startingDomino], hand]]
+  let longestChain = 0
+  let iterations = 10000
 
-  // This overflows at large hand sizes
   const buildChain = (chain: Domino[], remaining: Domino[]) => {
+    if (chain.length < longestChain) {
+      return
+    }
+
     chains.push(chain)
 
     const lastDomino = chain[chain.length - 1]
@@ -35,32 +41,38 @@ const getLongestChain = (startingDomino: Domino, hand: Domino[]): Domino[] | nul
       const others = remaining.filter(d => d !== nextDomino)
 
       if (nextDomino[0] === lastDomino[1]) {
-        buildChain([...chain, nextDomino], others)
+        longestChain = chain.length + 1
+        queue.push([[...chain, nextDomino], others])
+        return
       }
 
       if (nextDomino[1] === lastDomino[1]) {
-        buildChain([...chain, reverseDomino(nextDomino)], others)
+        longestChain = chain.length + 1
+        queue.push([[...chain, reverseDomino(nextDomino)], others])
+        return
       }
     })
   }
 
-  buildChain([startingDomino], hand)
+  while (queue.length > 0) {
+    const next = queue.shift()!
+    buildChain(next[0], next[1])
+    iterations -= 1
+
+    if (iterations === 0) {
+      throw Error('Iteration limit reached - maybe not be optimal chain')
+    }
+  }
 
   if (chains.length === 1) {
     return null
   }
 
   const longestChains = chains
-    .map(chain => chain.slice(1))
-    .filter((chain, _, array) => chain.length === Math.max(...array.map(c => c.length)))
-    .map(chain => ({
-      chain,
-      remainingScore: scoreDominos(hand.filter(d => chain.find(cd => isEqual(d, cd)) === null)),
-    }))
-    .sort((a, b) => (a.remainingScore > b.remainingScore ? -1 : 1))
-    .map(({ chain }) => chain)
+    .map(chain => ({ chain, score: scoreDominos(chain) }))
+    .sort((a, b) => (a.score > b.score ? -1 : 1))
 
-  return longestChains[0]
+  return longestChains[0].chain.slice(1)
 }
 
 export {
