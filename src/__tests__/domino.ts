@@ -46,6 +46,51 @@ describe('domino', () => {
       ])
     })
 
+    it('returns the longest possible chain', () => {
+      const hand: Domino[] = [
+        [3, 3],
+        [2, 1],
+        [2, 2],
+        [3, 2],
+        [1, 1],
+        [1, 0],
+        [3, 5],
+        [3, 6],
+        [7, 6],
+      ]
+      const startingDomino: Domino = [0, 0]
+      const longestChain = getLongestChain(startingDomino, hand)
+
+      expect(longestChain).toEqual([
+        [0, 1],
+        [1, 1],
+        [1, 2],
+        [2, 2],
+        [2, 3],
+        [3, 3],
+        [3, 6],
+        [6, 7],
+      ])
+    })
+
+    it('chooses the longest chain that leaves the smallest score in hand', () => {
+      const hand: Domino[] = [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [1, 4],
+        [4, 5],
+      ]
+      const startingDomino: Domino = [0, 0]
+      const longestChain = getLongestChain(startingDomino, hand)
+
+      expect(longestChain).toEqual([
+        [0, 1],
+        [1, 4],
+        [4, 5],
+      ])
+    })
+
     it('returns "null" if there is no possible chain', () => {
       const hand: Domino[] = [
         [1, 2],
